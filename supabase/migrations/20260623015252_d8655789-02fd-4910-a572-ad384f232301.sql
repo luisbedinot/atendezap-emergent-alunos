@@ -1,0 +1,1 @@
+ALTER TABLE public.company ADD COLUMN IF NOT EXISTS selected_plan_slug TEXT;

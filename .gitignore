@@ -1,0 +1,27 @@
+# ---- Emergent runtime artifacts (generated per-install; never commit) ----
+.supabase-runtime/
+/app/.supabase-runtime/
+
+# Secrets & environment (generated per-install by setup/write_env.py)
+.env
+*.env
+backend/.env
+frontend/.env
+!.env.example
+
+# Dependencies / build output
+node_modules/
+frontend/node_modules/
+.output/
+dist/
+.nitro/
+.tanstack/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS/editor
+.DS_Store
