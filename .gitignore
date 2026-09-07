@@ -5,9 +5,21 @@
 # Secrets & environment (generated per-install by setup/write_env.py)
 .env
 *.env
+.env.*
 backend/.env
 frontend/.env
 !.env.example
+!*.env.example
+
+# Instance-only records and export artifacts
+memory/
+test_reports/
+test_result.md
+EMERGENT_VALIDATION.md
+export/
+.emergent/
+.ruff_cache/
+.pytest_cache/
 
 # Dependencies / build output
 node_modules/

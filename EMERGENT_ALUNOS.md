@@ -24,7 +24,8 @@ O `setup/install.sh` é **idempotente** e:
 - **gera segredos novos por instalação** (JWT secret, chaves anon/service,
   segredo do proxy de IA) — nada é herdado de outra cópia;
 - **descobre automaticamente** a URL pública do ambiente;
-- aplica as 26 migrations em um **banco vazio** e sobe backend + frontend.
+- aplica as migrations em um **banco vazio** e sobe backend + frontend;
+- preserva os dados, as chaves e as configurações de integrações em novas execuções.
 
 ## Comandos úteis
 
@@ -81,8 +82,8 @@ Realtime; o código original de Realtime é preservado e reativado definindo
   para um Postgres/Supabase gerenciado (mesmas migrations/RLS) — a viabilidade
   no deploy permanente deve ser verificada separadamente.
 
-## O que foi validado
+## Se a Emergent perguntar sobre a IA
 
-Ver `EMERGENT_VALIDATION.md` para o relatório completo (login, painel master,
-empresa, CRM persistente, isolamento entre 2 contas, atualização entre abas,
-Gemini sintético, build, ausência de segredos no cliente).
+Responda: **Sim, ative a IA Gemini com a Chave Universal da Emergent e conclua a instalação e o preview.**
+
+As integrações externas continuam usando as credenciais do próprio aluno.

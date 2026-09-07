@@ -41,7 +41,13 @@ chmod +x "$SETUP/svc/"*.sh
 cp "$SETUP/svc/supabase.conf" /etc/supervisor/conf.d/supabase.conf
 # Register/refresh ONLY the supabase-* group (backend/frontend untouched).
 sudo supervisorctl reread
-sudo supervisorctl update
+sudo supervisorctl update supabase-postgres supabase-db-init supabase-gotrue supabase-postgrest
+# On reruns, supervisor does not restart a completed one-shot whose config is
+# unchanged. Run db-init again so new migrations are applied without data loss.
+if ! sudo supervisorctl status supabase-db-init | grep -q RUNNING; then
+  rm -f "$RUNTIME/.db-ready"
+  sudo supervisorctl start supabase-db-init
+fi
 # Wait for the one-shot db-init to finish (it writes .db-ready on success).
 echo -n "waiting for database init"
 for i in $(seq 1 180); do
@@ -54,6 +60,9 @@ if [ ! -f "$RUNTIME/.db-ready" ]; then
   tail -40 /var/log/supervisor/supabase-db-init.err.log 2>/dev/null >&2 || true
   die "db-init did not complete (no .db-ready). See log above."
 fi
+
+# Refresh script/env changes as well as configuration-file changes on reruns.
+sudo supervisorctl restart supabase-gotrue supabase-postgrest
 
 echo "== 5/7 environment files (secrets + discovered URL) =="
 python3 "$SETUP/write_env.py"

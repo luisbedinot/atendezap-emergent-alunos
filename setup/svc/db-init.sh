@@ -46,19 +46,11 @@ log "gotrue migrated"
 su postgres -c "$PGBIN/psql -h127.0.0.1 -Upostgres -d postgres -v ON_ERROR_STOP=1 -f $S/post-bootstrap.sql"
 log "post-bootstrap applied"
 
-if [ ! -f "$R/.migrations_applied" ]; then
-  for f in $(ls /app/supabase/migrations/*.sql | sort); do
-    log "migration: $(basename "$f")"
-    su postgres -c "$PGBIN/psql -h127.0.0.1 -Upostgres -d postgres -v ON_ERROR_STOP=1 -f $f"
-  done
-  touch "$R/.migrations_applied"
-  log "app migrations applied"
-else
-  log "app migrations already applied"
-fi
+bash "$S/app-migrations.sh"
+log "app migrations up to date"
 
-su postgres -c "$PGBIN/psql -h127.0.0.1 -Upostgres -d postgres -c \"GRANT USAGE ON SCHEMA public TO anon,authenticated,service_role; GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO authenticated; GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role; GRANT SELECT ON ALL TABLES IN SCHEMA public TO anon; GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated,service_role; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO authenticated,service_role,anon;\""
-log "grants applied"
+# Keep the explicit RLS/column/function permissions from the migrations.
+# Broad GRANT ALL here would reopen protected billing and credit operations.
 
 touch "$READY"
 log "done (.db-ready written)"

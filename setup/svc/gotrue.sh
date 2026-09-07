@@ -28,6 +28,7 @@ export GOTRUE_URI_ALLOW_LIST="*"
 export GOTRUE_JWT_SECRET="$JWT_SECRET"
 export GOTRUE_JWT_EXP=3600
 export GOTRUE_JWT_AUD=authenticated
+export GOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated
 export GOTRUE_JWT_ADMIN_ROLES=service_role
 export GOTRUE_JWT_ISSUER="$APP_URL/api/auth/v1"
 export GOTRUE_API_HOST=127.0.0.1

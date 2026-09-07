@@ -31,6 +31,10 @@ export const Route = createFileRoute("/entrar")({
   beforeLoad: async ({ search }) => {
     const { data } = await supabase.auth.getUser();
     if (data.user) {
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
+      if (roles?.some((r) => r.role === "super_admin")) {
+        throw redirect({ href: "/master/painel" });
+      }
       const dest = search.plano ? `/app/checkout?plano=${encodeURIComponent(search.plano)}` : "/app/dashboard";
       throw redirect({ href: dest });
     }
@@ -62,7 +66,11 @@ function EntrarPage() {
     if (!u.user) return;
     // First administrator / super admin always goes to the master area and must
     // never be sent to checkout of this same clone, even if a plano is in the URL.
-    const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", u.user.id);
+    const { data: roles, error: rolesError } = await supabase.from("user_roles").select("role").eq("user_id", u.user.id);
+    if (rolesError) {
+      toast.error("Não foi possível verificar seu acesso. Tente entrar novamente.");
+      return;
+    }
     if (roles?.some((r) => r.role === "super_admin")) {
       navigate({ to: "/master/painel", replace: true });
       return;
@@ -123,7 +131,7 @@ function EntrarPage() {
 
     if (signUpData.session) {
       setLoading(false);
-      toast.success("Conta criada! Vamos para o pagamento.");
+      toast.success("Conta criada! Preparando seu acesso.");
       return routeAfterAuth();
     }
 

@@ -2,9 +2,37 @@
 """Compose backend/.env and frontend/.env from generated secrets.
 Never prints secret values."""
 import os
+import re
 
 RUNTIME = "/app/.supabase-runtime"
 SECRETS = os.path.join(RUNTIME, "secrets.env")
+
+def read_env(path):
+    values = {}
+    try:
+        with open(path) as f:
+            for raw in f:
+                key, sep, value = raw.strip().partition("=")
+                if sep and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", key):
+                    values[key] = value
+    except FileNotFoundError:
+        pass
+    return values
+
+
+def save_env(path, generated):
+    # Preserve the student's integration settings when the installer is rerun.
+    # Only the generated database/auth/runtime entries are replaced.
+    values = read_env(path)
+    for line in generated.splitlines():
+        key, sep, value = line.partition("=")
+        if sep:
+            values[key] = value
+    with open(path, "w") as f:
+        for key, value in values.items():
+            f.write(f"{key}={value}\n")
+    os.chmod(path, 0o600)
+
 def discover_public_url() -> str:
     # 1) explicit env (backend supervisor sets APP_URL)
     for k in ("APP_URL", "PUBLIC_APP_URL"):
@@ -63,9 +91,7 @@ SUPABASE_SERVICE_ROLE_KEY={service}
 SUPABASE_JWT_SECRET={jwt_secret}
 AI_PROXY_SECRET={ai_proxy_secret}
 """
-with open("/app/frontend/.env", "w") as f:
-    f.write(frontend_env)
-os.chmod("/app/frontend/.env", 0o600)
+save_env("/app/frontend/.env", frontend_env)
 
 # Backend (.env): server-side Supabase clients + GoTrue/PostgREST config.
 backend_env = f"""SUPABASE_URL=http://127.0.0.1:8001/api
@@ -84,8 +110,6 @@ AI_PROXY_SECRET={ai_proxy_secret}
 emergent_key = os.environ.get("EMERGENT_LLM_KEY", "").strip()
 if emergent_key:
     backend_env += f"EMERGENT_LLM_KEY={emergent_key}\n"
-with open("/app/backend/.env", "w") as f:
-    f.write(backend_env)
-os.chmod("/app/backend/.env", 0o600)
+save_env("/app/backend/.env", backend_env)
 
 print("env files written (values masked)")
