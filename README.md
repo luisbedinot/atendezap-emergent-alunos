@@ -11,7 +11,7 @@ de IA da Lovable.
 1. Na Emergent, abra um novo projeto e clique em **Adicionar do GitHub**.
 2. Se solicitado, conecte sua conta do GitHub. Escolha **Repositório público**, cole
    `https://github.com/luisbedinot/atendezap-emergent-alunos`, selecione a branch
-   **main** e clique em **Pull from GitHub**.
+   **main**. Feche a janela pelo **X**; o nome do repositório deve aparecer junto ao prompt.
 3. Envie o prompt abaixo. Não é necessário abrir o terminal nem criar um banco manualmente.
 
 Guia completo: **[EMERGENT_ALUNOS.md](./EMERGENT_ALUNOS.md)**.

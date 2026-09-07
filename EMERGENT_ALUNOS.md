@@ -11,7 +11,8 @@ projeto Supabase original é usada.
 2. Conecte seu GitHub se a plataforma solicitar.
 3. Escolha **Repositório público** e cole
    `https://github.com/luisbedinot/atendezap-emergent-alunos`.
-4. Selecione **main**, clique em **Pull from GitHub** e envie este prompt:
+4. Selecione **main** e feche a janela pelo **X**. O nome do repositório fica
+   junto ao campo de mensagem. Envie este prompt:
 
 > Configure e rode este projeto na Emergent: execute `bash setup/install.sh`
 > para provisionar o banco isolado (Postgres + GoTrue + PostgREST), instalar o
