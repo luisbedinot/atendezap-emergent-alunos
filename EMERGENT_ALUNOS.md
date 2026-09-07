@@ -5,9 +5,13 @@ rodando na Emergent com um **banco isolado próprio** (Supabase self-hosted
 compatível: Postgres + GoTrue/Auth + PostgREST/RLS). Nenhuma conexão com o
 projeto Supabase original é usada.
 
-## Importar em 1 prompt
+## Importar o projeto
 
-Depois de **importar este repositório** na Emergent, cole **UM** prompt:
+1. Na Emergent, inicie um novo projeto e clique em **Adicionar do GitHub**.
+2. Conecte seu GitHub se a plataforma solicitar.
+3. Escolha **Repositório público** e cole
+   `https://github.com/luisbedinot/atendezap-emergent-alunos`.
+4. Selecione **main**, clique em **Pull from GitHub** e envie este prompt:
 
 > Configure e rode este projeto na Emergent: execute `bash setup/install.sh`
 > para provisionar o banco isolado (Postgres + GoTrue + PostgREST), instalar o
@@ -25,7 +29,9 @@ O `setup/install.sh` é **idempotente** e:
   segredo do proxy de IA) — nada é herdado de outra cópia;
 - **descobre automaticamente** a URL pública do ambiente;
 - aplica as migrations em um **banco vazio** e sobe backend + frontend;
-- preserva os dados, as chaves e as configurações de integrações em novas execuções.
+- preserva os dados, as chaves e as configurações de integrações em novas execuções;
+- aguarda a restauração do ambiente e repete o bootstrap se houver uma falha
+  transitória durante a reativação do preview.
 
 ## Comandos úteis
 
@@ -44,6 +50,13 @@ bash setup/scan-client-secrets.sh  # build + verifica que segredos não vazam (P
 2. O **primeiro** usuário cadastrado vira super administrador automaticamente.
 3. Você é redirecionado a `/master/painel`. Há alternância clara
    **Entrar / Criar conta** na tela de login.
+
+Em **Nova empresa**, cadastre uma empresa e um responsável. Depois entre com
+essa conta para concluir o cadastro da empresa e usar o CRM. O master administra
+a plataforma; o responsável usa o painel da empresa.
+
+O agente não deve criar um usuário de teste antes do dono da cópia: o primeiro
+cadastro é reservado ao aluno.
 
 ## IA (Gemini) via Chave Universal Emergent
 

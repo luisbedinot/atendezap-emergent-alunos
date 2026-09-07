@@ -6,16 +6,36 @@ próprio e isolado** (Supabase self-hosted compatível: Postgres + GoTrue/Auth +
 PostgREST/RLS). **Não** usa o Supabase original, WhatsApp externo nem o gateway
 de IA da Lovable.
 
-## Como rodar (1 prompt)
+## Como o aluno clona
 
-Depois de **importar este repositório** na Emergent, cole **UM** prompt — veja
-o guia completo em **[EMERGENT_ALUNOS.md](./EMERGENT_ALUNOS.md)**:
+1. Na Emergent, abra um novo projeto e clique em **Adicionar do GitHub**.
+2. Se solicitado, conecte sua conta do GitHub. Escolha **Repositório público**, cole
+   `https://github.com/luisbedinot/atendezap-emergent-alunos`, selecione a branch
+   **main** e clique em **Pull from GitHub**.
+3. Envie o prompt abaixo. Não é necessário abrir o terminal nem criar um banco manualmente.
+
+Guia completo: **[EMERGENT_ALUNOS.md](./EMERGENT_ALUNOS.md)**.
 
 > Configure e rode este projeto na Emergent: execute `bash setup/install.sh`
 > para provisionar o banco isolado (Postgres + GoTrue + PostgREST), instalar o
 > Node 22 e as dependências, aplicar as migrations em um banco vazio e subir o
 > preview. Em seguida me diga a URL do preview. O primeiro cadastro em
 > `/entrar?modo=signup` deve virar super administrador.
+
+Se a Emergent perguntar sobre a IA, responda:
+
+> Sim, ative a IA Gemini com a Chave Universal da Emergent e conclua a instalação e o preview.
+
+Abra o preview em **`/entrar?modo=signup`** e crie sua conta. O primeiro cadastro
+entra como **super administrador**. Em **Nova empresa**, crie uma empresa e o
+acesso do responsável para usar o CRM.
+
+**Para o agente da Emergent:** reserve o primeiro cadastro para o dono da cópia;
+não crie uma conta de teste antes dele. Verifique a instalação por health/build.
+
+O fluxo de instalação foi validado em uma nova cópia na Emergent em 07/09/2026
+com o prompt acima e a confirmação da IA. Testes adicionais do mantenedor
+não fazem parte dos passos do aluno.
 
 ## Stack
 

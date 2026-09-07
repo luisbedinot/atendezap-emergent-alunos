@@ -42,6 +42,10 @@ cp "$SETUP/svc/supabase.conf" /etc/supervisor/conf.d/supabase.conf
 # Register/refresh ONLY the supabase-* group (backend/frontend untouched).
 sudo supervisorctl reread
 sudo supervisorctl update supabase-postgres supabase-db-init supabase-gotrue supabase-postgrest
+# A script-only update does not recover a previously FATAL/stopped program.
+if ! sudo supervisorctl status supabase-postgres | grep -q RUNNING; then
+  sudo supervisorctl start supabase-postgres
+fi
 # On reruns, supervisor does not restart a completed one-shot whose config is
 # unchanged. Run db-init again so new migrations are applied without data loss.
 if ! sudo supervisorctl status supabase-db-init | grep -q RUNNING; then
@@ -50,7 +54,7 @@ if ! sudo supervisorctl status supabase-db-init | grep -q RUNNING; then
 fi
 # Wait for the one-shot db-init to finish (it writes .db-ready on success).
 echo -n "waiting for database init"
-for i in $(seq 1 180); do
+for i in $(seq 1 600); do
   [ -f "$RUNTIME/.db-ready" ] && break
   echo -n "."; sleep 1
 done

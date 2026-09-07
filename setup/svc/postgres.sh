@@ -7,6 +7,24 @@ set -eu
 R=/app/.supabase-runtime; PGBIN=/usr/lib/postgresql/15/bin; PGDATA=$R/pgdata; L=$R/logs
 mkdir -p "$L"
 
+# Emergent restores OS packages/accounts after supervisor has already started.
+# Wait through that window instead of exhausting supervisor's quick retries
+# on `chown: invalid user` while the persisted database is still intact.
+echo "[postgres] waiting for the OS account and PostgreSQL runtime..."
+runtime_ready=0
+for i in $(seq 1 300); do
+  if id postgres >/dev/null 2>&1 && getent group postgres >/dev/null 2>&1 && \
+     [ -x "$PGBIN/initdb" ] && "$PGBIN/postgres" --version >/dev/null 2>&1; then
+    runtime_ready=1
+    break
+  fi
+  sleep 1
+done
+[ "$runtime_ready" = "1" ] || {
+  echo "[postgres] OS runtime not ready after 300s; supervisor will retry." >&2
+  exit 1
+}
+
 if [ ! -f "$PGDATA/PG_VERSION" ]; then
   mkdir -p "$PGDATA"; chown -R postgres:postgres "$PGDATA" "$L"
   setpriv --reuid=postgres --regid=postgres --init-groups \

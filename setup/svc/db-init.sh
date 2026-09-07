@@ -2,8 +2,8 @@
 # One-shot ordered DB init (idempotent). Runs UNDER SUPERVISOR after Postgres:
 #   secrets -> wait pg -> bootstrap -> gotrue migrate -> post-bootstrap ->
 #   app migrations (once) -> grants -> write .db-ready marker.
-# Fail-fast: any step error aborts (set -e) so supervisor marks it FATAL and the
-# marker is NOT written -> gotrue/postgrest stay parked (never start half-baked).
+# Fail-fast: any step error exits nonzero and leaves the marker absent.
+# Supervisor retries failures; successful initialization remains one-shot.
 set -eu
 S=/app/setup; R=/app/.supabase-runtime; PGBIN=/usr/lib/postgresql/15/bin
 L=$R/logs; mkdir -p "$L"
